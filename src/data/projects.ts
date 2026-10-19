@@ -12,6 +12,12 @@ const neutralInterior =
   'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1600&q=85';
 const houseExterior =
   'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=85';
+const bathroomBefore = '/images/before-after/bathroom-before.png';
+const bathroomAfter = '/images/before-after/bathroom-after.png';
+const kitchenBefore = '/images/before-after/kitchen-before.png';
+const kitchenAfter = '/images/before-after/kitchen-after.png';
+const livingRoomBefore = '/images/before-after/living-room-before.png';
+const livingRoomAfter = '/images/before-after/living-room-after.png';
 
 // These concept entries keep the portfolio layout usable until company photography is added.
 export const projects: Project[] = [
@@ -32,10 +38,10 @@ export const projects: Project[] = [
       { src: neutralInterior, alt: 'Illustrative warm neutral finished interior' },
     ],
     beforeImage: {
-      src: brightRoom,
-      alt: 'Illustrative bathroom before renovation',
+      src: bathroomBefore,
+      alt: 'Concept visualization of a dated bathroom before renovation',
     },
-    afterImage: { src: bathroom, alt: 'Illustrative bathroom after renovation' },
+    afterImage: { src: bathroomAfter, alt: 'Concept visualization of the same bathroom after renovation' },
     services: ['Tile Installation', 'Bathroom Renovation', 'Finishing'],
     featured: true,
     illustrative: true,
@@ -57,10 +63,10 @@ export const projects: Project[] = [
       { src: kitchen, alt: 'Illustrative kitchen connected to a finished living space' },
     ],
     beforeImage: {
-      src: neutralInterior,
-      alt: 'Illustrative room before a fresh paint finish',
+      src: livingRoomBefore,
+      alt: 'Concept visualization of a living room before repainting',
     },
-    afterImage: { src: brightRoom, alt: 'Illustrative room after a fresh paint finish' },
+    afterImage: { src: livingRoomAfter, alt: 'Concept visualization of the same living room after repainting' },
     services: ['Interior Painting', 'Walls & Ceilings', 'Trim & Doors'],
     featured: true,
     illustrative: true,
@@ -80,6 +86,11 @@ export const projects: Project[] = [
       { src: kitchen, alt: 'Illustrative contemporary kitchen' },
       { src: interior, alt: 'Illustrative kitchen and dining area' },
     ],
+    beforeImage: {
+      src: kitchenBefore,
+      alt: 'Concept visualization of a dated kitchen before renovation',
+    },
+    afterImage: { src: kitchenAfter, alt: 'Concept visualization of the same kitchen after renovation' },
     services: ['Kitchen Renovation', 'Tile Installation', 'Painting'],
     featured: true,
     illustrative: true,
