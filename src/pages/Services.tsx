@@ -2,6 +2,7 @@ import { ArrowUpRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { otherServices, paintServices, primaryServices, tileServices } from '../data/services';
 import { ButtonLink, PageMeta, PhotoNote, Reveal, SectionHeading } from '../components/UI';
+import { responsiveImageProps } from '../utils/images';
 
 export default function Services() {
   return (
@@ -16,7 +17,7 @@ export default function Services() {
         <div className="shell">
           <Reveal className="section-topline"><SectionHeading eyebrow="01 / Primary specialty" title="Tile installation." description="Precision layout and considered finishes for surfaces that do the work every day." /><span className="section-side-note">Residential & commercial</span></Reveal>
           <div className="service-detail-feature">
-            <div className="service-detail-image"><img src="https://images.unsplash.com/photo-1722858812700-1519db101372?auto=format&fit=crop&w=1900&q=85" alt="Illustrative contemporary shower with large format tile" loading="lazy" width="1400" height="1000" /><span className="photo-placeholder-tag">Concept image</span></div>
+            <div className="service-detail-image"><img src="https://images.unsplash.com/photo-1722858812700-1519db101372?auto=format&fit=crop&w=1900&q=85" {...responsiveImageProps('https://images.unsplash.com/photo-1722858812700-1519db101372?auto=format&fit=crop&w=1900&q=85', '(max-width: 760px) 100vw, 50vw')} alt="Illustrative contemporary shower with large format tile" loading="lazy" width="1400" height="1000" /><span className="photo-placeholder-tag">Concept image</span></div>
             <div className="service-detail-copy"><span className="eyebrow">Thoughtful layout · Crisp finish</span><h3>Tile work built around the space.</h3><p>{primaryServices[0].description} We pay attention to alignment, transitions and the details that make a tiled surface feel complete.</p><ul className="check-list">{tileServices.map((item) => <li key={item}><Check size={15} />{item}</li>)}</ul><ButtonLink to="/contact#estimate" variant="dark">Discuss a tile project</ButtonLink></div>
           </div>
         </div>
@@ -26,7 +27,7 @@ export default function Services() {
         <div className="shell">
           <Reveal className="section-topline"><SectionHeading eyebrow="02 / Primary specialty" title="Interior & exterior painting." description="Clean preparation, careful application and a finish that feels right in the room." /><span className="section-side-note">Residential & commercial</span></Reveal>
           <div className="service-detail-feature service-detail-reverse">
-            <div className="service-detail-image"><img src="https://images.unsplash.com/photo-1723642612494-161a6900f559?auto=format&fit=crop&w=1900&q=85" alt="Illustrative bright finished interior in warm neutral colors" loading="lazy" width="1400" height="1000" /><span className="photo-placeholder-tag">Concept image</span></div>
+            <div className="service-detail-image"><img src="https://images.unsplash.com/photo-1723642612494-161a6900f559?auto=format&fit=crop&w=1900&q=85" {...responsiveImageProps('https://images.unsplash.com/photo-1723642612494-161a6900f559?auto=format&fit=crop&w=1900&q=85', '(max-width: 760px) 100vw, 50vw')} alt="Illustrative bright finished interior in warm neutral colors" loading="lazy" width="1400" height="1000" /><span className="photo-placeholder-tag">Concept image</span></div>
             <div className="service-detail-copy"><span className="eyebrow">Careful prep · Smooth finish</span><h3>Paint that brings the details together.</h3><p>{primaryServices[1].description} From walls and ceilings to exterior surfaces, we plan the preparation and protect the spaces around the work.</p><ul className="check-list">{paintServices.map((item) => <li key={item}><Check size={15} />{item}</li>)}</ul><ButtonLink to="/contact#estimate" variant="dark">Discuss a painting project</ButtonLink></div>
           </div>
         </div>

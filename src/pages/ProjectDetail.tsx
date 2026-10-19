@@ -5,6 +5,7 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { projects } from '../data/projects';
 import { BeforeAfterSlider, ProjectGallery, VideoModal, VideoPlayButton } from '../components/ProjectTools';
 import { ButtonLink, PageMeta, PhotoNote, ProjectCard, Reveal } from '../components/UI';
+import { responsiveImageProps, resizedImageUrl } from '../utils/images';
 
 export default function ProjectDetail() {
   const { slug } = useParams();
@@ -22,7 +23,7 @@ export default function ProjectDetail() {
       <PageMeta title={`${project.title} | Calgary Project Gallery`} description={`${project.description} Illustrative concept photography from a Calgary construction and renovation portfolio.`} />
       <article className="project-detail-page">
         <section className="project-detail-hero">
-          <img src={project.coverImage} alt={project.coverAlt} width="2200" height="1450" loading="eager" />
+          <img src={project.coverImage} {...responsiveImageProps(project.coverImage, '100vw')} alt={project.coverAlt} width="2200" height="1450" loading="eager" fetchPriority="high" />
           <div className="detail-hero-shade" />
           <div className="shell detail-hero-content"><Link className="back-to-projects" to="/projects"><ArrowLeft size={15} /> All projects</Link><div><span className="eyebrow">{project.category} · {project.location}</span><h1>{project.title}</h1><span className="illustrative-banner">Concept photography · Replace with a completed company project</span></div></div>
         </section>
@@ -40,7 +41,7 @@ export default function ProjectDetail() {
 
         {project.beforeImage && project.afterImage && <section className="before-after-section section"><div className="shell before-after-layout"><Reveal><span className="eyebrow">Before / after</span><h2>See the change<br />for yourself.</h2><p>Drag the handle to compare the two concept images.</p></Reveal><Reveal className="detail-before-after" delay={0.1}><BeforeAfterSlider before={project.beforeImage} after={project.afterImage} /></Reveal></div></section>}
 
-        <section className="project-film-section"><div className="shell project-film-content"><div><span className="eyebrow">Behind the finish</span><h2>See how the work comes together.</h2><p>Add project footage when a video is available.</p></div><div className="project-film-preview" style={{ backgroundImage: `url(${project.coverImage})` }}><span>{project.title}</span><VideoPlayButton onClick={() => setVideoOpen(true)} label={`Play ${project.title} project video`} /></div></div></section>
+        <section className="project-film-section"><div className="shell project-film-content"><div><span className="eyebrow">Behind the finish</span><h2>See how the work comes together.</h2><p>Add project footage when a video is available.</p></div><div className="project-film-preview" style={{ backgroundImage: `url(${resizedImageUrl(project.coverImage, 1000)})` }}><span>{project.title}</span><VideoPlayButton onClick={() => setVideoOpen(true)} label={`Play ${project.title} project video`} /></div></div></section>
         <AnimatePresence>{videoOpen && <VideoModal video={project.video} title={project.title} onClose={() => setVideoOpen(false)} />}</AnimatePresence>
 
         <section className="next-project-section"><div className="shell next-project-inner"><Link to="/projects" className="text-link"><ArrowLeft size={15} /> Back to projects</Link><Link className="next-project-link" to={`/projects/${nextProject.slug}`}><span className="eyebrow">Next project</span><strong>{nextProject.title}</strong><ArrowUpRight size={18} /></Link></div></section>

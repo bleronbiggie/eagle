@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { applyPageMeta, getBusinessSchema } from '../utils/seo';
 import { projects } from '../data/projects';
 import type { Project } from '../types/project';
+import { responsiveImageProps } from '../utils/images';
 
 export function PageMeta({ title, description }: { title: string; description: string }) {
   useEffect(() => applyPageMeta(title, description), [title, description]);
@@ -64,7 +65,7 @@ export function ProjectCard({ project, size = 'standard', index = 0 }: { project
   return (
     <Link to={`/projects/${project.slug}`} className={`project-card project-card-${size}`}>
       <div className="project-card-image">
-        <img src={project.coverImage} alt={project.coverAlt} loading="lazy" width="1200" height="900" />
+        <img src={project.coverImage} {...responsiveImageProps(project.coverImage, '(max-width: 760px) 92vw, (max-width: 1100px) 45vw, 42vw')} alt={project.coverAlt} loading="lazy" width="1200" height="900" />
         <span className="project-card-arrow" aria-hidden="true"><ArrowUpRight size={18} /></span>
         {project.illustrative && <span className="photo-placeholder-tag">Concept image</span>}
       </div>

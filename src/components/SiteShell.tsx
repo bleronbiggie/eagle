@@ -70,7 +70,7 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`site-header ${scrolled ? 'is-scrolled' : ''} ${homeHero && !scrolled ? 'over-hero' : ''}`}
+      className={`site-header ${scrolled ? 'is-scrolled' : ''} ${homeHero && !scrolled ? 'over-hero' : ''} ${menuOpen ? 'is-menu-open' : ''}`}
     >
       <div className="header-inner shell">
         <Link className="brand" to="/" aria-label={`${company.name}, home`}>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ChevronLeft, ChevronRight, Play, X } from 'lucide-react';
 import type { ProjectVideo } from '../types/project';
+import { responsiveImageProps } from '../utils/images';
 
 interface ImageItem {
   src: string;
@@ -46,7 +47,7 @@ export function ProjectGallery({ images, title }: { images: ImageItem[]; title: 
             onClick={() => setActiveIndex(index)}
             aria-label={`Open image ${index + 1} of ${images.length}: ${image.alt}`}
           >
-            <img src={image.src} alt={image.alt} loading="lazy" />
+            <img src={image.src} {...responsiveImageProps(image.src, '(max-width: 760px) 95vw, 60vw')} alt={image.alt} loading="lazy" />
             <span className="gallery-open-hint">View image <span>↗</span></span>
           </button>
         ))}
@@ -129,6 +130,7 @@ function Lightbox({
         <img
           className="lightbox-image"
           src={images[activeIndex].src}
+          {...responsiveImageProps(images[activeIndex].src, '(max-width: 760px) 96vw, 80vw')}
           alt={images[activeIndex].alt}
           onTouchStart={(event) => { touchStart.current = event.touches[0]?.clientX ?? null; }}
           onTouchEnd={(event) => {

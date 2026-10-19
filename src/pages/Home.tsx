@@ -8,6 +8,7 @@ import { projects } from '../data/projects';
 import { reviews } from '../data/reviews';
 import { VideoModal, VideoPlayButton } from '../components/ProjectTools';
 import { ButtonLink, HomepageBusinessSchema, PageMeta, PhotoNote, ProjectCard, Reveal, SectionHeading } from '../components/UI';
+import { responsiveImageProps } from '../utils/images';
 
 const heroImage = 'https://images.unsplash.com/photo-1722858812700-1519db101372?auto=format&fit=crop&w=2400&q=90';
 
@@ -24,7 +25,7 @@ export default function Home() {
       <HomepageBusinessSchema />
 
       <section className="home-hero">
-        <img className="hero-photo" src={heroImage} alt="Illustrative contemporary bathroom with carefully finished tile" width="2400" height="1500" loading="eager" />
+        <img className="hero-photo" src={heroImage} {...responsiveImageProps(heroImage, '100vw')} alt="Illustrative contemporary bathroom with carefully finished tile" width="2400" height="1500" loading="eager" fetchPriority="high" />
         <div className="hero-shade" />
         <div className="hero-content shell">
           <div className="hero-copy">
@@ -66,7 +67,7 @@ export default function Home() {
               const list = index === 0 ? tileServices : paintServices;
               return (
                 <Reveal className={`primary-service-card primary-service-${index + 1}`} delay={index * 0.08} key={service.title}>
-                  <div className="primary-card-photo"><img src={image} alt={index === 0 ? 'Concept image of a modern tiled shower' : 'Concept image of a finished neutral interior'} loading="lazy" width="1200" height="900" /><span className="image-index">0{index + 1}</span><span className="image-bottom-label">{index === 0 ? 'Tile, stone & detail' : 'Interior & exterior'}</span></div>
+                  <div className="primary-card-photo"><img src={image} {...responsiveImageProps(image, '(max-width: 760px) 100vw, 48vw')} alt={index === 0 ? 'Concept image of a modern tiled shower' : 'Concept image of a finished neutral interior'} loading="lazy" width="1200" height="900" /><span className="image-index">0{index + 1}</span><span className="image-bottom-label">{index === 0 ? 'Tile, stone & detail' : 'Interior & exterior'}</span></div>
                   <div className="primary-card-body">
                     <div className="primary-card-heading"><div><span className="eyebrow">Primary specialty</span><h3>{service.title}</h3></div><Icon size={24} strokeWidth={1.4} /></div>
                     <p>{service.description}</p>
@@ -126,7 +127,7 @@ export default function Home() {
             <button className="video-inline-trigger" type="button" onClick={() => setVideoOpen(true)}><span className="play-outline"><Play size={15} fill="currentColor" /></span> Open the video showcase</button>
           </Reveal>
           <Reveal className="video-showcase-frame" delay={0.1}>
-            <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85" alt="Illustrative architectural interior ready for a project film" loading="lazy" width="1200" height="780" />
+            <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85" {...responsiveImageProps('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85', '(max-width: 760px) 100vw, 55vw')} alt="Illustrative architectural interior ready for a project film" loading="lazy" width="1200" height="780" />
             <span className="film-stamp">Project<br />film 01</span>
             <VideoPlayButton onClick={() => setVideoOpen(true)} label="Open the project video showcase" />
             <span className="video-image-caption">A place for the process, not just the final frame.</span>
@@ -151,7 +152,7 @@ export default function Home() {
 
       <section className="about-preview-section">
         <div className="shell about-preview-grid">
-          <Reveal className="about-preview-image"><img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1500&q=85" alt="Illustrative kitchen interior with warm, natural finishes" loading="lazy" width="1100" height="1200" /><span className="image-frame-mark">Calgary<br />& area</span></Reveal>
+          <Reveal className="about-preview-image"><img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1500&q=85" {...responsiveImageProps('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1500&q=85', '(max-width: 760px) 90vw, 45vw')} alt="Illustrative kitchen interior with warm, natural finishes" loading="lazy" width="1100" height="1200" /><span className="image-frame-mark">Calgary<br />& area</span></Reveal>
           <Reveal className="about-preview-copy" delay={0.1}><span className="eyebrow">Construction done with care</span><h2>Good spaces begin with good work.</h2><p>We believe great construction is about more than completing a project. It is about precision, communication and creating work that continues to look great for years.</p><p>Tile, painting and renovation services for homes and businesses in Calgary and surrounding areas.</p><ButtonLink to="/about" variant="outline">Learn more about us</ButtonLink></Reveal>
         </div>
       </section>

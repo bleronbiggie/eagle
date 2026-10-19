@@ -2,6 +2,7 @@ import { ArrowUpRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { company } from '../data/company';
 import { ButtonLink, PageMeta, Reveal, SectionHeading } from '../components/UI';
+import { responsiveImageProps } from '../utils/images';
 
 export default function About() {
   const stats = [
@@ -17,7 +18,7 @@ export default function About() {
 
       <section className="about-manifesto-section section" id="service-area"><div className="shell manifesto-grid"><Reveal className="manifesto-heading"><span className="eyebrow">The way we see it</span><h2>Great construction is a series of thoughtful decisions.</h2></Reveal><Reveal className="manifesto-copy" delay={0.1}><p>We believe great construction is about more than completing a project. It is about precision, communication and creating work that continues to look great for years.</p><p>We provide residential and commercial construction and renovation services in Calgary and surrounding areas, with tile installation and painting as our primary specialties.</p><Link className="text-link" to="/services">Explore our services <ArrowUpRight size={15} /></Link></Reveal></div></section>
 
-      <section className="about-image-break"><div className="shell"><div className="about-wide-image"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2200&q=85" alt="Illustrative contemporary interior with clean architectural lines" loading="lazy" width="2200" height="1100" /><span className="image-caption-chip">Calgary · Concept image</span></div></div></section>
+      <section className="about-image-break"><div className="shell"><div className="about-wide-image"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2200&q=85" {...responsiveImageProps('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2200&q=85', '100vw')} alt="Illustrative contemporary interior with clean architectural lines" loading="lazy" width="2200" height="1100" /><span className="image-caption-chip">Calgary · Concept image</span></div></div></section>
 
       <section className="section about-values-section"><div className="shell"><Reveal className="section-topline"><SectionHeading eyebrow="Our approach" title="A good finish starts before the finish." description="Preparation, care and communication shape the result at every stage." /><span className="section-side-note">Principles / 01–04</span></Reveal><div className="about-values-grid">{[
         ['01', 'Listen first', 'Understand the space, the priorities and what a successful result means to you.'],

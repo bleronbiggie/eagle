@@ -12,12 +12,12 @@ const neutralInterior =
   'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1600&q=85';
 const houseExterior =
   'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=85';
-const bathroomBefore = '/images/before-after/bathroom-before.png';
-const bathroomAfter = '/images/before-after/bathroom-after.png';
-const kitchenBefore = '/images/before-after/kitchen-before.png';
-const kitchenAfter = '/images/before-after/kitchen-after.png';
-const livingRoomBefore = '/images/before-after/living-room-before.png';
-const livingRoomAfter = '/images/before-after/living-room-after.png';
+const bathroomBefore = '/images/before-after/bathroom-before.jpg';
+const bathroomAfter = '/images/before-after/bathroom-after.jpg';
+const kitchenBefore = '/images/before-after/kitchen-before.jpg';
+const kitchenAfter = '/images/before-after/kitchen-after.jpg';
+const livingRoomBefore = '/images/before-after/living-room-before.jpg';
+const livingRoomAfter = '/images/before-after/living-room-after.jpg';
 
 // These concept entries keep the portfolio layout usable until company photography is added.
 export const projects: Project[] = [
