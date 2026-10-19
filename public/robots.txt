@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://calgary-craft-workmanship.wryaphid128.chatgpt.site/sitemap.xml
