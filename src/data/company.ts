@@ -2,7 +2,7 @@ export const company = {
   name: '[COMPANY NAME]',
   phoneDisplay: '[PHONE NUMBER]',
   phoneRaw: '[PHONE RAW]',
-  email: '[EMAIL]',
+  email: 'bleronbiggie@gmail.com',
   location: 'Calgary, Alberta',
   businessHours: '[BUSINESS HOURS]',
   yearsExperience: null as number | null,

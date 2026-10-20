@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState, type ChangeEvent, type FormEvent } 
 import { ArrowUpRight, Check, ImagePlus, X } from 'lucide-react';
 import { estimateServiceOptions } from '../data/services';
 import { submitEstimate, type EstimateRequest } from '../services/contactService';
+import { compressProjectPhoto } from '../utils/compressImage';
 
-type FormValues = Omit<EstimateRequest, 'photos'>;
+type FormValues = Omit<EstimateRequest, 'photos' | 'website'>;
 type FormErrors = Partial<Record<keyof FormValues | 'photos', string>>;
 
 const initialValues: FormValues = {
@@ -24,6 +25,7 @@ export function ContactForm() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [processingPhotos, setProcessingPhotos] = useState(false);
   const objectUrls = useRef<string[]>([]);
 
   useEffect(() => () => objectUrls.current.forEach((url) => URL.revokeObjectURL(url)), []);
@@ -33,18 +35,18 @@ export function ContactForm() {
     setErrors((current) => ({ ...current, [field]: undefined }));
   };
 
-  const addPhotos = (event: ChangeEvent<HTMLInputElement>) => {
+  const addPhotos = async (event: ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(event.target.files ?? []);
     event.target.value = '';
     if (selected.length === 0) return;
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    const invalid = selected.find((file) => !allowedTypes.includes(file.type) || file.size > 8 * 1024 * 1024);
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+    const invalid = selected.find((file) => !allowedTypes.includes(file.type) || file.size > 12 * 1024 * 1024);
     if (invalid) {
       setErrors((current) => ({
         ...current,
         photos: !allowedTypes.includes(invalid.type)
-          ? 'Choose JPG, JPEG, PNG or WEBP images.'
-          : 'Each image must be 8 MB or smaller.',
+          ? 'Choose JPG, PNG or WEBP. HEIC works when your phone browser can open it.'
+          : 'Each image must be 12 MB or smaller before compression.',
       }));
       return;
     }
@@ -52,11 +54,25 @@ export function ContactForm() {
       setErrors((current) => ({ ...current, photos: 'You can attach up to 6 images.' }));
       return;
     }
-    const urls = selected.map((file) => URL.createObjectURL(file));
-    objectUrls.current.push(...urls);
-    setPhotos((current) => [...current, ...selected]);
-    setPreviews((current) => [...current, ...urls]);
-    setErrors((current) => ({ ...current, photos: undefined }));
+    setProcessingPhotos(true);
+    try {
+      const compressed: File[] = [];
+      for (const [index, file] of selected.entries()) {
+        compressed.push(await compressProjectPhoto(file, photos.length + index));
+      }
+      const urls = compressed.map((file) => URL.createObjectURL(file));
+      objectUrls.current.push(...urls);
+      setPhotos((current) => [...current, ...compressed]);
+      setPreviews((current) => [...current, ...urls]);
+      setErrors((current) => ({ ...current, photos: undefined }));
+    } catch (error) {
+      setErrors((current) => ({
+        ...current,
+        photos: error instanceof Error ? error.message : 'A photo could not be compressed. Try another image.',
+      }));
+    } finally {
+      setProcessingPhotos(false);
+    }
   };
 
   const removePhoto = (index: number) => {
@@ -67,6 +83,17 @@ export function ContactForm() {
     }
     setPhotos((current) => current.filter((_, currentIndex) => currentIndex !== index));
     setPreviews((current) => current.filter((_, currentIndex) => currentIndex !== index));
+  };
+
+  const resetForm = () => {
+    objectUrls.current.forEach((url) => URL.revokeObjectURL(url));
+    objectUrls.current = [];
+    setSubmitted(false);
+    setValues(initialValues);
+    setPhotos([]);
+    setPreviews([]);
+    setErrors({});
+    setSubmitError('');
   };
 
   const validate = () => {
@@ -82,14 +109,17 @@ export function ContactForm() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (submitting || submitted || !validate()) return;
+    if (submitting || processingPhotos || submitted || !validate()) return;
     setSubmitting(true);
     setSubmitError('');
     try {
-      await submitEstimate({ ...values, photos });
+      const website = new FormData(event.currentTarget).get('website')?.toString() ?? '';
+      await submitEstimate({ ...values, photos, website });
       setSubmitted(true);
-    } catch {
-      setSubmitError('We could not prepare your request. Please try again.');
+    } catch (error) {
+      setSubmitError(error instanceof Error && error.message === 'email_not_configured'
+        ? 'The email inbox is not connected yet. Please contact us directly or try again later.'
+        : 'We could not send your request. Please try again or contact us directly.');
     } finally {
       setSubmitting(false);
     }
@@ -99,10 +129,10 @@ export function ContactForm() {
     return (
       <div className="form-success" role="status" aria-live="polite">
         <span className="success-icon"><Check size={20} /></span>
-        <span className="eyebrow">Demo request prepared</span>
+        <span className="eyebrow">Request sent</span>
         <h3>Thanks, {values.name.split(' ')[0]}.</h3>
-        <p>Your request is ready in this demo, but it has not been sent or stored. Connect a form service to receive real estimate requests.</p>
-        <button className="text-link" type="button" onClick={() => { setSubmitted(false); setValues(initialValues); setPhotos([]); setPreviews([]); }}>
+        <p>Your estimate request was emailed to bleronbiggie@gmail.com with the project details and photos attached. We’ll reply using your preferred contact method.</p>
+        <button className="text-link" type="button" onClick={resetForm}>
           Submit another request <ArrowUpRight size={15} />
         </button>
       </div>
@@ -110,19 +140,23 @@ export function ContactForm() {
   }
 
   return (
-    <form className="estimate-form" onSubmit={handleSubmit} noValidate>
+    <form className="estimate-form" id="estimate-form" onSubmit={handleSubmit} noValidate>
+      <div className="honeypot-field" aria-hidden="true">
+        <label htmlFor="website">Leave this field empty</label>
+        <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
       <div className="form-grid">
         <Field label="Full name" required error={errors.name}>
-          <input autoComplete="name" value={values.name} onChange={(event) => update('name', event.target.value)} placeholder="Your name" aria-invalid={Boolean(errors.name)} />
+          <input autoComplete="name" maxLength={120} value={values.name} onChange={(event) => update('name', event.target.value)} placeholder="Your name" aria-invalid={Boolean(errors.name)} />
         </Field>
         <Field label="Phone number" required error={errors.phone}>
-          <input autoComplete="tel" type="tel" value={values.phone} onChange={(event) => update('phone', event.target.value)} placeholder="(403) 555-0123" aria-invalid={Boolean(errors.phone)} />
+          <input autoComplete="tel" maxLength={50} type="tel" value={values.phone} onChange={(event) => update('phone', event.target.value)} placeholder="(403) 555-0123" aria-invalid={Boolean(errors.phone)} />
         </Field>
         <Field label="Email address" error={errors.email}>
-          <input autoComplete="email" type="email" value={values.email} onChange={(event) => update('email', event.target.value)} placeholder="you@example.com" aria-invalid={Boolean(errors.email)} />
+          <input autoComplete="email" maxLength={254} type="email" value={values.email} onChange={(event) => update('email', event.target.value)} placeholder="you@example.com" aria-invalid={Boolean(errors.email)} />
         </Field>
         <Field label="Project address">
-          <input autoComplete="street-address" value={values.address} onChange={(event) => update('address', event.target.value)} placeholder="Calgary or nearby area" />
+          <input autoComplete="street-address" maxLength={200} value={values.address} onChange={(event) => update('address', event.target.value)} placeholder="Calgary or nearby area" />
         </Field>
         <Field label="Service needed" required error={errors.service}>
           <select value={values.service} onChange={(event) => update('service', event.target.value)} aria-invalid={Boolean(errors.service)}>
@@ -136,16 +170,16 @@ export function ContactForm() {
           </select>
         </Field>
         <Field label="Tell us about the project" required error={errors.description} className="field-full">
-          <textarea rows={5} value={values.description} onChange={(event) => update('description', event.target.value)} placeholder="What would you like to change, and when are you hoping to start?" aria-invalid={Boolean(errors.description)} />
+          <textarea rows={5} maxLength={3000} value={values.description} onChange={(event) => update('description', event.target.value)} placeholder="What would you like to change, and when are you hoping to start?" aria-invalid={Boolean(errors.description)} />
         </Field>
       </div>
 
       <div className="upload-field">
-        <div className="upload-heading"><div><label htmlFor="project-photos">Project photos <span>Optional</span></label><p>JPG, JPEG, PNG or WEBP · up to 6 images · 8 MB each</p></div><ImagePlus size={19} /></div>
+        <div className="upload-heading"><div><label htmlFor="project-photos">Project photos <span>Optional</span></label><p>JPG, JPEG, PNG or WEBP · up to 6 · compressed before sending</p></div><ImagePlus size={19} /></div>
         <label className="upload-dropzone" htmlFor="project-photos">
-          <input id="project-photos" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" multiple onChange={addPhotos} />
+          <input id="project-photos" type="file" accept=".jpg,.jpeg,.png,.webp,.heic,.heif,image/jpeg,image/png,image/webp,image/heic,image/heif" multiple disabled={processingPhotos || photos.length >= 6} onChange={addPhotos} />
           <span className="upload-icon"><ImagePlus size={18} /></span>
-          <span><strong>Choose project photos</strong><small>Attach images to help describe the work</small></span>
+          <span><strong>{processingPhotos ? 'Preparing photos…' : 'Choose project photos'}</strong><small>Images are compressed on this device before upload</small></span>
           <span className="upload-arrow">↗</span>
         </label>
         {errors.photos && <span className="field-error" role="alert">{errors.photos}</span>}
@@ -162,13 +196,13 @@ export function ContactForm() {
       </div>
 
       <div className="form-submit-row">
-        <button className="button button-accent form-submit" type="submit" disabled={submitting}>
-          {submitting ? 'Preparing request…' : 'Request a free estimate'} <ArrowUpRight size={17} />
+        <button className="button button-accent form-submit" type="submit" disabled={submitting || processingPhotos}>
+          {processingPhotos ? 'Preparing photos…' : submitting ? 'Sending request…' : 'Request a free estimate'} <ArrowUpRight size={17} />
         </button>
         <p>We’ll use these details to discuss your project and prepare an estimate.</p>
       </div>
       {submitError && <p className="form-error-summary" role="alert">{submitError}</p>}
-      <p className="form-demo-note">Demo form · Your information is not sent or stored.</p>
+      <p className="form-privacy-note">Your contact and project details will be emailed to our team so we can respond. Please don’t include payment details or government ID numbers.</p>
     </form>
   );
 }
