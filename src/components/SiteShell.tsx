@@ -17,6 +17,7 @@ const navItems = [
   { label: 'Home', to: '/' },
   { label: 'Services', to: '/services' },
   { label: 'Projects', to: '/projects' },
+  { label: 'Gallery', to: '/gallery' },
   { label: 'About', to: '/about' },
   { label: 'Contact', to: '/contact' },
 ];
@@ -201,6 +202,7 @@ export function SiteFooter() {
           <Link to="/">Home</Link>
           <Link to="/services">Services</Link>
           <Link to="/projects">Projects</Link>
+          <Link to="/gallery">Gallery</Link>
           <Link to="/about">About</Link>
           <Link to="/contact">Contact</Link>
         </div>
